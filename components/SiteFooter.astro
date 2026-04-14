@@ -1,0 +1,62 @@
+---
+import { footerSections, utilityLinks, siteDescription, resolveHref } from '../nav';
+
+const currentOrigin = Astro.site?.origin ?? Astro.url.origin;
+---
+
+<footer class="jr-site-footer">
+	<div class="jr-site-footer-inner">
+		<div class="jr-site-footer-grid">
+			<div class="jr-site-footer-about">
+				<div class="jr-site-footer-title">JellyRock</div>
+				<p>{siteDescription}</p>
+			</div>
+
+			{footerSections.map((section) => (
+				<div class="jr-site-footer-column">
+					<h4>{section.title}</h4>
+					<ul>
+						{section.links.map((link) => (
+							<li>
+								<a class="jr-footer-link" href={resolveHref(link.href, currentOrigin)}>
+									{link.icon === 'heart' && (
+										<svg class="jr-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+											<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+										</svg>
+									)}
+									{link.text}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))}
+		</div>
+	</div>
+
+	<div class="jr-site-footer-bottom">
+		<div class="jr-site-footer-bottom-row">
+			<nav class="jr-site-footer-utility" aria-label="Utility links">
+				{utilityLinks.map((link, i) => (
+					<>
+						{i !== 0 && <span class="jr-site-footer-utility-sep">·</span>}
+						<a class="jr-footer-link" href={resolveHref(link.href, currentOrigin)}>{link.text}</a>
+					</>
+				))}
+			</nav>
+
+			<div class="jr-site-footer-socials">
+				<a href="https://github.com/jellyrock/jellyrock" aria-label="GitHub" title="GitHub">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+					</svg>
+				</a>
+				<a href="https://matrix.to/#/#jellyrock-app:matrix.org" aria-label="Matrix" title="Matrix">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M.632.55v22.9H2.28V24H0V0h2.28v.55H.633zm7.494 7.31v1.12h.03c.3-.42.666-.75 1.09-.98.428-.23.923-.345 1.48-.345.528 0 1.01.1 1.45.31.437.21.77.58.992 1.11.24-.37.57-.68.96-.93.384-.24.84-.37 1.34-.37.384 0 .74.05 1.063.14.32.09.6.23.827.42.23.19.41.44.54.73.133.29.2.64.2 1.04v5.65h-2.24v-4.73c0-.21-.01-.4-.025-.58a1.27 1.27 0 0 0-.116-.42c-.065-.13-.16-.23-.29-.3-.13-.07-.298-.11-.515-.11-.21 0-.387.04-.533.12-.146.08-.26.19-.34.32-.08.13-.138.27-.175.42-.036.15-.054.3-.054.45v4.82h-2.24V11.04c0-.18-.015-.35-.045-.51-.03-.16-.085-.29-.164-.4-.08-.11-.194-.19-.343-.24-.15-.05-.34-.07-.563-.07a.983.983 0 0 0-.46.12c-.145.08-.27.19-.37.33-.1.14-.174.3-.22.46-.045.17-.07.35-.07.54v4.95h-2.25V7.86h2.11zm15.243 15.59V.55H21.72V0H24v24h-2.28v-.55h1.65z" />
+					</svg>
+				</a>
+			</div>
+		</div>
+	</div>
+</footer>

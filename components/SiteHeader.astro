@@ -1,0 +1,46 @@
+---
+import { headerLinks, donateLink, siteHome, resolveHref } from '../nav';
+
+const currentUrl = Astro.url.toString();
+// Use the configured production origin (Astro.site) rather than the request
+// origin, so links resolve correctly in dev (where both sites run on localhost).
+const currentOrigin = Astro.site?.origin ?? Astro.url.origin;
+
+function isCurrent(href: string): boolean {
+	try {
+		const a = new URL(href);
+		const b = new URL(currentUrl);
+		return a.origin === b.origin && a.pathname === b.pathname;
+	} catch {
+		return false;
+	}
+}
+---
+
+<header class="jr-site-header">
+	<div class="jr-site-header-inner">
+		<a class="jr-site-logo" href={resolveHref(siteHome.href, currentOrigin)}>{siteHome.text}</a>
+
+		<nav class="jr-site-nav" aria-label="Site navigation">
+			{headerLinks.map((link) => (
+				<a
+					href={resolveHref(link.href, currentOrigin)}
+					aria-current={isCurrent(link.href) ? 'page' : undefined}
+				>
+					{link.text}
+				</a>
+			))}
+		</nav>
+
+		<div class="jr-site-header-extra">
+			<slot name="extra" />
+		</div>
+
+		<a class="jr-site-donate" href={resolveHref(donateLink.href, currentOrigin)}>
+			<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+				<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+			</svg>
+			{donateLink.text}
+		</a>
+	</div>
+</header>
