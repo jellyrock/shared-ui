@@ -13,17 +13,33 @@ websites.
 
 ## How each site consumes it
 
-Each consuming site has a `fetch-shared-ui.mjs` build script that, before
-`astro build` runs:
+Each consuming site has a `fetch-shared-ui` build script that runs before
+`astro build`. By default it shallow-clones this repo from GitHub and copies
+`tokens.css`, `components/`, and `nav.ts` into the consumer's `src/shared-ui/`
+directory. That's the path CI uses — no setup required.
 
-1. Looks for a sibling `../shared-ui/` directory (local dev case — this repo
-   sits next to the consumer repo)
-2. Falls back to cloning `https://github.com/jellyrock/shared-ui.git` (CI case)
-3. Copies `tokens.css`, `components/`, and `nav.ts` into the consumer's
-   `src/shared-ui/` directory
+The consumer then imports via `~/shared-ui/components/SiteHeader.astro` and
+includes `~/shared-ui/tokens.css` in its global CSS.
 
-The consumer site then imports via `~/shared-ui/components/SiteHeader.astro`
-and includes `~/shared-ui/tokens.css` in its global CSS.
+### Opt-in: symlink mode for live reload
+
+When you're actively editing this repo and want saves to hot-reload in a
+consumer site, clone this repo as a sibling of the consumer:
+
+```text
+PROJECTS/JellyRock/
+├── shared-ui/          ← this repo
+├── jellyrock.app/      ← consumer
+└── docs/               ← consumer
+```
+
+If `../shared-ui/` exists, `fetch-shared-ui` symlinks `src/shared-ui/` to it
+instead of cloning. Vite picks up every save instantly — no commit, push, or
+rebuild needed. Remove the sibling directory to revert to the default.
+
+Caveat: the symlink points at your working tree, so a consumer build can
+reference `shared-ui` commits that aren't pushed yet. Always push `shared-ui`
+first when shipping cross-repo changes.
 
 ## Updating
 
