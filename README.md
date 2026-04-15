@@ -1,5 +1,8 @@
 # JellyRock Shared UI
 
+[![License](https://img.shields.io/github/license/jellyrock/shared-ui 'License')](./LICENSE)
+[![build](https://img.shields.io/github/actions/workflow/status/jellyrock/shared-ui/ci.yml?logo=github&branch=main 'build')](https://github.com/jellyrock/shared-ui/actions/workflows/ci.yml?query=branch%3Amain)
+
 Shared header, footer, design tokens, and navigation data for all JellyRock
 websites.
 
@@ -41,8 +44,27 @@ Caveat: the symlink points at your working tree, so a consumer build can
 reference `shared-ui` commits that aren't pushed yet. Always push `shared-ui`
 first when shipping cross-repo changes.
 
+## Local development
+
+```bash
+npm ci
+npm run check          # tsc + eslint + prettier
+npm run fix            # eslint --fix + prettier --write
+```
+
+Every push and pull request runs the same `npm run check` via
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) so broken shared-ui
+code can never land on `main` and silently poison downstream consumer builds.
+
+| Tool                                  | What it catches                                                                     |
+| ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `tsc --noEmit`                        | TypeScript errors in `nav.ts` and any typed imports                                 |
+| `eslint` (with `astro-eslint-parser`) | Unused variables, `no-undef`, bad JS/TS in `<script>` blocks of `.astro` components |
+| `prettier`                            | Formatting drift (print width, quotes, trailing commas)                             |
+
 ## Updating
 
-Changes here require the consumer sites to rebuild. When this repo is pushed
-to its own GitHub repo, a `repository_dispatch` webhook can trigger rebuilds
-in `jellyrock.app`, `docs`, and `api-docs`.
+Changes here require the consumer sites to rebuild. A future
+`repository_dispatch` webhook can trigger rebuilds in `jellyrock.app`, `docs`,
+and `api-docs` automatically; for now, push to `main` here, then re-run the
+consumer deploy workflows manually (or wait for their next push).

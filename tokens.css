@@ -5,268 +5,268 @@
  */
 
 :root {
-	/* Theme colors (default: JellyRock). These map to settings.json in the app. */
-	--jr-primary: #8b5cf6;
-	--jr-secondary: #3b82f6;
-	--jr-bg-primary: #0d1117;
-	--jr-bg-secondary: #161b22;
-	--jr-text-primary: #f0f0f0;
-	--jr-text-secondary: #a8a8a8;
-	--jr-text-disabled: #4a4a4a;
+  /* Theme colors (default: JellyRock). These map to settings.json in the app. */
+  --jr-primary: #8b5cf6;
+  --jr-secondary: #3b82f6;
+  --jr-bg-primary: #0d1117;
+  --jr-bg-secondary: #161b22;
+  --jr-text-primary: #f0f0f0;
+  --jr-text-secondary: #a8a8a8;
+  --jr-text-disabled: #4a4a4a;
 
-	/* Typography */
-	--jr-font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
-	--jr-font-heading: 'Barlow', sans-serif;
+  /* Typography */
+  --jr-font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --jr-font-heading: 'Barlow', sans-serif;
 
-	/* Layout */
-	--jr-header-height: 4rem;
-	--jr-max-content-width: 80rem;
+  /* Layout */
+  --jr-header-height: 4rem;
+  --jr-max-content-width: 80rem;
 }
 
 /* ─── Shared site chrome ───────────────────────────────── */
 
 .jr-site-header {
-	position: sticky;
-	top: 0;
-	z-index: 50;
-	width: 100%;
-	background-color: color-mix(in srgb, var(--jr-bg-primary) 85%, transparent);
-	backdrop-filter: blur(8px);
-	border-bottom: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background-color: color-mix(in srgb, var(--jr-bg-primary) 85%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
 }
 
 .jr-site-header-inner {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	max-width: var(--jr-max-content-width);
-	margin: 0 auto;
-	padding: 0 1.5rem;
-	height: var(--jr-header-height);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: var(--jr-max-content-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: var(--jr-header-height);
 }
 
 .jr-site-logo {
-	font-family: var(--jr-font-sans);
-	font-weight: 700;
-	font-size: 1.25rem;
-	color: var(--jr-text-primary);
-	text-decoration: none;
-	flex-shrink: 0;
+  font-family: var(--jr-font-sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--jr-text-primary);
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 .jr-site-logo:hover {
-	color: var(--jr-text-primary);
+  color: var(--jr-text-primary);
 }
 
 .jr-site-nav {
-	display: none;
+  display: none;
 }
 
 @media (min-width: 64rem) {
-	.jr-site-nav {
-		display: flex;
-		gap: 1.5rem;
-		flex: 1;
-		justify-content: center;
-	}
+  .jr-site-nav {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 .jr-site-nav a {
-	color: var(--jr-text-secondary);
-	font-size: 0.875rem;
-	font-weight: 500;
-	text-decoration: none;
-	transition: color 0.15s ease;
-	white-space: nowrap;
+  color: var(--jr-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  white-space: nowrap;
 }
 
 .jr-site-nav a:hover,
 .jr-site-nav a[aria-current='page'] {
-	color: var(--jr-secondary);
+  color: var(--jr-secondary);
 }
 
 .jr-site-header-extra {
-	display: flex;
-	align-items: center;
-	margin-left: auto;
-	flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 .jr-site-header-extra:empty {
-	display: none;
+  display: none;
 }
 
 .jr-site-donate {
-	background-color: var(--jr-secondary);
-	color: white !important;
-	padding: 0.45rem 1rem;
-	border-radius: 9999px;
-	font-size: 0.875rem;
-	font-weight: 600;
-	text-decoration: none;
-	white-space: nowrap;
-	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
-	transition: background-color 0.15s ease;
-	flex-shrink: 0;
+  background-color: var(--jr-secondary);
+  color: white !important;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
 }
 
 /* On mobile, hide the Donate button to avoid overlap with the docs hamburger
    menu. The button is still reachable via the footer Donate link. */
 @media (max-width: 50rem) {
-	.jr-site-donate {
-		display: none;
-	}
+  .jr-site-donate {
+    display: none;
+  }
 }
 
 /* When the extra slot is populated, it pushes the donate button; when empty,
    the donate button pushes itself right */
 .jr-site-header-extra:empty ~ .jr-site-donate {
-	margin-left: auto;
+  margin-left: auto;
 }
 
 .jr-site-donate:hover {
-	background-color: color-mix(in srgb, var(--jr-secondary) 85%, black);
+  background-color: color-mix(in srgb, var(--jr-secondary) 85%, black);
 }
 
 /* ─── Footer ───────────────────────────────────────────── */
 
 .jr-site-footer {
-	width: 100%;
-	background-color: var(--jr-bg-secondary);
-	border-top: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
-	color: var(--jr-text-secondary);
-	font-size: 0.875rem;
+  width: 100%;
+  background-color: var(--jr-bg-secondary);
+  border-top: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
+  color: var(--jr-text-secondary);
+  font-size: 0.875rem;
 }
 
 .jr-site-footer-inner {
-	max-width: var(--jr-max-content-width);
-	margin: 0 auto;
-	/* Generous top padding absorbs what was previously margin-top, avoiding a
+  max-width: var(--jr-max-content-width);
+  margin: 0 auto;
+  /* Generous top padding absorbs what was previously margin-top, avoiding a
 	   visual gap between the sidebar bottom and the footer on doc pages. */
-	padding: 4rem 1.5rem 1.5rem;
+  padding: 4rem 1.5rem 1.5rem;
 }
 
 .jr-site-footer-grid {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
 }
 
 @media (min-width: 50rem) {
-	.jr-site-footer-grid {
-		grid-template-columns: 2fr 1fr 1fr 1fr;
-	}
+  .jr-site-footer-grid {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
 }
 
 .jr-site-footer-about {
-	max-width: 28rem;
+  max-width: 28rem;
 }
 
 .jr-site-footer-title {
-	font-family: var(--jr-font-sans);
-	font-weight: 700;
-	font-size: 1.25rem;
-	color: var(--jr-text-primary);
-	margin-bottom: 0.5rem;
+  font-family: var(--jr-font-sans);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--jr-text-primary);
+  margin-bottom: 0.5rem;
 }
 
 .jr-site-footer-about p {
-	line-height: 1.5;
-	margin: 0;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .jr-site-footer-column h4 {
-	font-weight: 600;
-	color: var(--jr-text-primary);
-	margin: 0 0 0.75rem;
-	font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--jr-text-primary);
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
 }
 
 .jr-site-footer-column ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .jr-site-footer-column li {
-	margin-bottom: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
 .jr-site-footer a.jr-footer-link {
-	color: var(--jr-text-secondary);
-	text-decoration: none;
-	transition: color 0.15s ease;
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
+  color: var(--jr-text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .jr-site-footer a.jr-footer-link:hover {
-	color: var(--jr-secondary);
+  color: var(--jr-secondary);
 }
 
 .jr-link-icon {
-	color: var(--jr-secondary);
-	flex-shrink: 0;
+  color: var(--jr-secondary);
+  flex-shrink: 0;
 }
 
 .jr-site-footer-bottom {
-	max-width: var(--jr-max-content-width);
-	margin: 2.5rem auto 0;
-	padding: 1.25rem 1.5rem;
-	border-top: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
+  max-width: var(--jr-max-content-width);
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--jr-text-disabled) 40%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .jr-site-footer-bottom-row {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	align-items: center;
-	justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @media (min-width: 50rem) {
-	.jr-site-footer-bottom-row {
-		flex-direction: row;
-	}
+  .jr-site-footer-bottom-row {
+    flex-direction: row;
+  }
 }
 
 .jr-site-footer-license {
-	text-align: center;
-	font-size: 0.8125rem;
-	color: var(--jr-text-disabled);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--jr-text-disabled);
 }
 
 .jr-site-footer-utility {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.875rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
 }
 
 .jr-site-footer-utility-sep {
-	color: var(--jr-text-disabled);
+  color: var(--jr-text-disabled);
 }
 
 .jr-site-footer-socials {
-	display: flex;
-	gap: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
 }
 
 .jr-site-footer-socials a {
-	color: var(--jr-text-primary);
-	display: inline-flex;
-	padding: 0.5rem;
-	border-radius: 0.375rem;
-	transition: color 0.15s ease;
+  color: var(--jr-text-primary);
+  display: inline-flex;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: color 0.15s ease;
 }
 
 .jr-site-footer-socials a:hover {
-	color: var(--jr-secondary);
+  color: var(--jr-secondary);
 }
