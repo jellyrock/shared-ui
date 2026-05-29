@@ -1,0 +1,68 @@
+name: Release
+
+# Auto-tags a new vX.Y.Z when the consumed shared-ui surface changes on main,
+# so downstream consumers (jellyrock.app, docs) can pin a ref and Renovate can
+# bump it. Dependency-free (bash + gh) by design.
+#
+# Versioning: patch bump by default; minor bump if any new commit since the
+# last tag is a `feat:` (Conventional Commits). Major bumps stay manual — cut
+# the tag by hand for an intentional breaking change.
+#
+# Scoped to the files the fetch scripts actually copy (nav.ts, tokens.css,
+# components/), so dependency/tooling bumps that don't touch the surface don't
+# churn a release through every consumer.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - nav.ts
+      - tokens.css
+      - components/**
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full history + tags to compute the next version
+
+      - name: Compute and push the next tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # Don't double-tag a commit (manual re-run / workflow_dispatch).
+          if [ -n "$(git tag --points-at HEAD)" ]; then
+            echo "HEAD already tagged: $(git tag --points-at HEAD | tr '\n' ' ') — nothing to do"
+            exit 0
+          fi
+
+          latest=$(git tag --list 'v*' --sort=-v:refname | head -1)
+          if [ -z "$latest" ]; then
+            next="v1.0.0"
+          else
+            ver=${latest#v}
+            major=${ver%%.*}; rest=${ver#*.}; minor=${rest%%.*}; patch=${rest#*.}
+            if git log "${latest}..HEAD" --pretty=%s | grep -qiE '^feat(\(.*\))?!?:'; then
+              minor=$((minor + 1)); patch=0
+            else
+              patch=$((patch + 1))
+            fi
+            next="v${major}.${minor}.${patch}"
+          fi
+
+          echo "Releasing ${next} (previous: ${latest:-none})"
+          git tag "$next"
+          git push origin "$next"
+          gh release create "$next" --generate-notes --title "$next"
