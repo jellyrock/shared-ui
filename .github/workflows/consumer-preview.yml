@@ -1,0 +1,123 @@
+name: Consumer preview
+
+# Renders jellyrock.app with this change and runs its browser tests, so a change to what
+# shared-ui ships is reviewed where it is made.
+#
+# - Functional failures fail this check: the change would break the site.
+# - Screenshot changes do NOT fail it; they are what you review. The job summary lists them and
+#   the "jellyrock.app-report" artifact shows expected / actual / diff for each.
+# - The "jellyrock.app-screenshots" artifact is the approved set. When this change ships,
+#   jellyrock.app's shared-ui-bump workflow regenerates its screenshots and auto-merges the bump
+#   only if they are identical to this set; otherwise it leaves the bump PR for a human.
+#
+# Run it by hand (Actions → Consumer preview → Run workflow) on a release commit to approve a
+# release that never had a preview.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - nav.ts
+      - tokens.css
+      - components/**
+      - .github/workflows/consumer-preview.yml
+  workflow_dispatch:
+
+concurrency:
+  group: consumer-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  jellyrock-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout shared-ui (this change)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: shared-ui
+
+      # Sibling checkout: jellyrock.app's fetch-shared-ui.ts links ../shared-ui when present,
+      # so the site builds with this change instead of its pinned release.
+      - name: Checkout jellyrock.app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: jellyrock/jellyrock.app
+          ref: main
+          path: jellyrock.app
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: jellyrock.app/package-lock.json
+
+      - name: Build jellyrock.app with this shared-ui
+        working-directory: jellyrock.app
+        run: |
+          npm ci
+          npm run build
+          git rev-parse HEAD > ../jellyrock.app-commit.txt
+
+      # jellyrock.app's own wrapper runs Playwright in the image jellyrock.app pins, so the
+      # screenshots match its baselines pixel for pixel.
+      - name: Functional tests
+        working-directory: jellyrock.app
+        run: scripts/playwright-docker.sh playwright test --grep-invert @visual
+
+      - name: Screenshot comparison against jellyrock.app's baselines
+        id: visual
+        working-directory: jellyrock.app
+        continue-on-error: true
+        run: scripts/playwright-docker.sh playwright test --grep @visual
+
+      # Keep the diff report from the comparison run; recording overwrites playwright-report/.
+      - name: Record the screenshots this change produces
+        if: steps.visual.outcome == 'failure'
+        working-directory: jellyrock.app
+        run: |
+          mv playwright-report ../jellyrock.app-report
+          scripts/playwright-docker.sh playwright test --grep @visual --update-snapshots
+
+      - name: Summary
+        working-directory: jellyrock.app
+        env:
+          VISUAL: ${{ steps.visual.outcome }}
+        run: |
+          changed=$(git status --porcelain -- tests/e2e/__screenshots__ | awk '{print $2}')
+          {
+            echo "## jellyrock.app with this shared-ui"
+            echo
+            echo "Functional tests passed (jellyrock.app @ $(cut -c1-7 ../jellyrock.app-commit.txt))."
+            echo
+            if [ "$VISUAL" = success ]; then
+              echo "No screenshot changes: the site looks exactly as it does today."
+            else
+              echo "**$(wc -l <<<"$changed") screenshot(s) change.** Review them in the \`jellyrock.app-report\` artifact (open \`index.html\`: expected, actual and diff per page):"
+              echo
+              while read -r f; do echo "- $f"; done <<<"$changed"
+            fi
+            echo
+            echo "Merging approves these screenshots: the jellyrock.app bump auto-merges when it reproduces them exactly."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload approved screenshots
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: jellyrock.app-screenshots
+          path: |
+            jellyrock.app/tests/e2e/__screenshots__/
+            jellyrock.app-commit.txt
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload screenshot diffs
+        if: steps.visual.outcome == 'failure'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: jellyrock.app-report
+          path: jellyrock.app-report/
+          retention-days: 30

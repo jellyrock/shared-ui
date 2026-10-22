@@ -37,6 +37,7 @@ jobs:
           fetch-depth: 0 # need full history + tags to compute the next version
 
       - name: Compute and push the next tag
+        id: tag
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -66,3 +67,29 @@ jobs:
           git tag "$next"
           git push origin "$next"
           gh release create "$next" --generate-notes --title "$next"
+          echo "version=${next}" >> "$GITHUB_OUTPUT"
+
+      # Tell jellyrock.app a release exists; its shared-ui-bump workflow opens the bump PR and
+      # auto-merges it when its screenshots match the ones approved on this change's PR
+      # (consumer-preview.yml). The default token cannot reach another repo, so this uses the
+      # JellyRock GitHub App, scoped to jellyrock.app only.
+      - name: Generate JellyRock app token
+        id: app-token
+        if: steps.tag.outputs.version != ''
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: jellyrock
+          repositories: jellyrock.app
+
+      - name: Notify jellyrock.app
+        if: steps.tag.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          gh api repos/jellyrock/jellyrock.app/dispatches \
+            -f event_type=shared-ui-release \
+            -f "client_payload[version]=${VERSION}"
+          echo "Sent shared-ui-release ${VERSION} to jellyrock/jellyrock.app"
