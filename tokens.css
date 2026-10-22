@@ -129,6 +129,107 @@
   background-color: color-mix(in srgb, var(--jr-secondary) 85%, black);
 }
 
+/* Small-screen menu: a button that opens the header links (plus Donate) in a native
+   popover. Shown exactly where .jr-site-nav is hidden. */
+.jr-site-menu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: -0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--jr-text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.jr-site-menu-button:hover,
+.jr-site-menu-button:focus-visible {
+  background-color: color-mix(in srgb, var(--jr-text-disabled) 35%, transparent);
+}
+
+.jr-site-menu-button:focus-visible {
+  outline: 2px solid var(--jr-secondary);
+  outline-offset: 2px;
+}
+
+@media (min-width: 64rem) {
+  .jr-site-menu-button {
+    display: none;
+  }
+}
+
+/* With Donate hidden and nothing in the extra slot, the button itself takes the free space. */
+@media (max-width: 50rem) {
+  .jr-site-header-extra:empty ~ .jr-site-menu-button {
+    margin-left: auto;
+  }
+}
+
+/* Hidden unless open. A browser without popover support drops the :popover-open rule,
+   so the menu stays hidden there instead of rendering inline in the header. */
+.jr-site-menu {
+  display: none;
+}
+
+.jr-site-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: calc(var(--jr-header-height) + 0.5rem) 1rem auto auto;
+  width: min(16rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.5rem;
+  background-color: var(--jr-bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--jr-text-disabled) 60%, transparent);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 45%);
+  color: var(--jr-text-primary);
+}
+
+.jr-site-menu::backdrop {
+  background-color: rgb(0 0 0 / 35%);
+}
+
+.jr-site-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--jr-text-primary);
+  font-family: var(--jr-font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.jr-site-menu a:hover,
+.jr-site-menu a:focus-visible {
+  background-color: color-mix(in srgb, var(--jr-text-disabled) 35%, transparent);
+}
+
+.jr-site-menu a[aria-current='page'] {
+  color: var(--jr-secondary);
+}
+
+.jr-site-menu a.jr-site-menu-donate {
+  margin-top: 0.25rem;
+  justify-content: center;
+  background-color: var(--jr-secondary);
+  color: white;
+  font-weight: 600;
+}
+
+.jr-site-menu a.jr-site-menu-donate:hover,
+.jr-site-menu a.jr-site-menu-donate:focus-visible {
+  background-color: color-mix(in srgb, var(--jr-secondary) 85%, black);
+}
+
 /* ─── Footer ───────────────────────────────────────────── */
 
 .jr-site-footer {

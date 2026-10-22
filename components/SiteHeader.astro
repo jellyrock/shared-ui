@@ -6,11 +6,16 @@ const currentUrl = Astro.url.toString();
 // origin, so links resolve correctly in dev (where both sites run on localhost).
 const currentOrigin = Astro.site?.origin ?? Astro.url.origin;
 
+// nav.ts links have no trailing slash ('/install'); sites that build trailing-slash URLs don't.
+const trimSlash = (pathname: string) => pathname.replace(/\/+$/, '') || '/';
+
 function isCurrent(href: string): boolean {
   try {
     const a = new URL(href);
-    const b = new URL(currentUrl);
-    return a.origin === b.origin && a.pathname === b.pathname;
+    // During a static build Astro.url carries the dev-server origin (http://localhost:4321),
+    // so compare against the production origin, as the links do.
+    const b = new URL(new URL(currentUrl).pathname, currentOrigin);
+    return a.origin === b.origin && trimSlash(a.pathname) === trimSlash(b.pathname);
   } catch {
     return false;
   }
@@ -43,5 +48,36 @@ function isCurrent(href: string): boolean {
         ></path>
       </svg>
     </a>
+
+    {
+      /*
+      Small screens: the links above are hidden, so a menu button opens them in a popover.
+      Native `popover` needs no JavaScript, so it works under the sites' strict
+      `script-src 'self'` CSP; the browser closes it on Esc or a tap outside.
+    */
+    }
+    <button class="jr-site-menu-button" type="button" popovertarget="jr-site-menu" aria-label="Site menu">
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <nav id="jr-site-menu" class="jr-site-menu" popover aria-label="Site menu">
+      {
+        headerLinks.map((link) => (
+          <a href={resolveHref(link.href, currentOrigin)} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+            {link.text}
+          </a>
+        ))
+      }
+      <a class="jr-site-menu-donate" href={resolveHref(donateLink.href, currentOrigin)}>{donateLink.text}</a>
+    </nav>
   </div>
 </header>
