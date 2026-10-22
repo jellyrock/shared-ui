@@ -10,7 +10,12 @@ websites.
 
 - `tokens.css` — CSS variables for colors, fonts, spacing, plus styles for
   `.jr-site-header`, `.jr-site-footer`
-- `components/SiteHeader.astro` — top navigation
+- `components/SiteHeader.astro` — top navigation. Below 64rem (1024px) the
+  links collapse into a menu button that opens them, plus Donate, in a native
+  `popover`: no JavaScript, so it works under a strict `script-src 'self'` CSP.
+  A site with its own small-screen menu (Starlight's, on the docs sites) can
+  hide `.jr-site-menu-button` where that menu shows and list `headerLinks`
+  there instead, so there is only ever one menu button.
 - `components/SiteFooter.astro` — full-width footer
 - `nav.ts` — link data (header nav, footer sections, social links)
 
