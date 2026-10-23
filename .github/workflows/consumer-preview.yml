@@ -12,15 +12,15 @@ name: Consumer preview
 #
 # Run it by hand (Actions → Consumer preview → Run workflow) on a release commit to approve a
 # release that never had a preview.
+#
+# It runs on every PR, with no `paths:` filter: `jellyrock-app` is a required check, and GitHub
+# leaves a required check that a path filter skipped "Pending", which blocks the merge. A job
+# skipped by `if:` would pass instead, but its run has no screenshots, and shared-ui-bump takes the
+# newest successful run whose nav.ts, tokens.css and components/ match the release.
 
 on:
   pull_request:
     branches: [main]
-    paths:
-      - nav.ts
-      - tokens.css
-      - components/**
-      - .github/workflows/consumer-preview.yml
   workflow_dispatch:
 
 concurrency:
@@ -48,10 +48,11 @@ jobs:
           ref: main
           path: jellyrock.app
 
+      # jellyrock.app's Node (and the npm it bundles): its lockfile only installs with that npm.
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22'
+          node-version-file: jellyrock.app/.nvmrc
           cache: 'npm'
           cache-dependency-path: jellyrock.app/package-lock.json
 
