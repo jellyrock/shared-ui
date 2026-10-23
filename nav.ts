@@ -15,18 +15,19 @@ export interface FooterSection {
   links: NavLink[];
 }
 
-/** Top navigation links (shown between logo and Donate button) */
+/** Top navigation links (shown between logo and Donate button). jellyrock.app page URLs end
+ * in '/': its pages are directories, and the URL without the slash is a 308 redirect. */
 export const headerLinks: NavLink[] = [
-  { text: 'Install', href: 'https://jellyrock.app/install' },
-  { text: 'Features', href: 'https://jellyrock.app/features' },
-  { text: 'Screenshots', href: 'https://jellyrock.app/screenshots' },
+  { text: 'Install', href: 'https://jellyrock.app/install/' },
+  { text: 'Features', href: 'https://jellyrock.app/features/' },
+  { text: 'Screenshots', href: 'https://jellyrock.app/screenshots/' },
   { text: 'Documentation', href: 'https://docs.jellyrock.app' },
-  { text: 'Contact', href: 'https://jellyrock.app/contact' },
+  { text: 'Contact', href: 'https://jellyrock.app/contact/' },
 ];
 
 export const donateLink: NavLink = {
   text: 'Donate',
-  href: 'https://jellyrock.app/donate',
+  href: 'https://jellyrock.app/donate/',
 };
 
 export const siteHome: NavLink = {
@@ -39,9 +40,9 @@ export const footerSections: FooterSection[] = [
   {
     title: 'App',
     links: [
-      { text: 'Install', href: 'https://jellyrock.app/install' },
-      { text: 'Features', href: 'https://jellyrock.app/features' },
-      { text: 'Screenshots', href: 'https://jellyrock.app/screenshots' },
+      { text: 'Install', href: 'https://jellyrock.app/install/' },
+      { text: 'Features', href: 'https://jellyrock.app/features/' },
+      { text: 'Screenshots', href: 'https://jellyrock.app/screenshots/' },
     ],
   },
   {
@@ -58,7 +59,7 @@ export const footerSections: FooterSection[] = [
       { text: 'Source Code', href: 'https://github.com/jellyrock/jellyrock' },
       { text: 'Matrix Chat', href: 'https://matrix.to/#/#jellyrock-app:matrix.org' },
       { text: 'Translate', href: 'https://translate.jellyrock.app' },
-      { text: 'Donate', href: 'https://jellyrock.app/donate', icon: 'heart' },
+      { text: 'Donate', href: 'https://jellyrock.app/donate/', icon: 'heart' },
     ],
   },
 ];
@@ -67,9 +68,9 @@ export const footerSections: FooterSection[] = [
  * and the license footnote. These are all "find my way around" / legal links. */
 export const utilityLinks: NavLink[] = [
   { text: 'Home', href: 'https://jellyrock.app/' },
-  { text: 'Privacy Policy', href: 'https://jellyrock.app/privacy' },
-  { text: 'Terms of Use', href: 'https://jellyrock.app/terms' },
-  { text: 'Sitemap', href: 'https://jellyrock.app/sitemap' },
+  { text: 'Privacy Policy', href: 'https://jellyrock.app/privacy/' },
+  { text: 'Terms of Use', href: 'https://jellyrock.app/terms/' },
+  { text: 'Sitemap', href: 'https://jellyrock.app/sitemap/' },
 ];
 
 export const socialLinks: NavLink[] = [
