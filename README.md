@@ -18,13 +18,15 @@ websites.
   there instead, so there is only ever one menu button.
 - `components/SiteFooter.astro` — full-width footer
 - `nav.ts` — link data (header nav, footer sections, social links)
+- `testing/` — the browser tests every site runs against its production build
+  (see [Shared browser tests](#shared-browser-tests))
 
 ## How each site consumes it
 
 Each consuming site has a `fetch-shared-ui` build script that runs before
 `astro build`. By default it shallow-clones this repo from GitHub and copies
-`tokens.css`, `components/`, and `nav.ts` into the consumer's `src/shared-ui/`
-directory. That's the path CI uses — no setup required.
+`tokens.css`, `components/`, `nav.ts` and `testing/` into the consumer's
+`src/shared-ui/` directory. That's the path CI uses — no setup required.
 
 The consumer then imports via `~/shared-ui/components/SiteHeader.astro` and
 includes `~/shared-ui/tokens.css` in its global CSS.
@@ -69,9 +71,46 @@ code can never land on `main` and silently poison downstream consumer builds.
 | `eslint` (with `astro-eslint-parser`) | Unused variables, `no-undef`, bad JS/TS in `<script>` blocks of `.astro` components |
 | `prettier`                            | Formatting drift (print width, quotes, trailing commas)                             |
 
+## Shared browser tests
+
+`testing/` holds the parts of the sites' browser tests (Playwright) that are
+the same everywhere:
+
+- `serve-dist.mjs` serves a build the way Caddy does in production: the site's
+  security headers (from a JSON file the site keeps), a 308 to the
+  trailing-slash URL for directories, and the build's `404.html` with status
+  404 for a missing path.
+- `checks.ts` records what a visitor would hit on a page (console errors, CSP
+  violations, failed or cross-origin requests, broken images) and scrolls a
+  page through so lazy content loads.
+- `site-tests.ts` registers the tests every site runs: each sitemap page loads
+  cleanly, every internal link and anchor resolves without a redirect, and a
+  missing page returns 404.
+
+A site keeps its own Playwright config, page list, screenshots, production
+headers and site-specific tests, and calls the shared tests from a spec file:
+
+```ts
+import { test, expect } from '@playwright/test';
+import { defineSiteTests } from '../../src/shared-ui/testing/site-tests';
+
+defineSiteTests({ test, expect, distDir: 'dist', requiredPages: ['/', '/install/'] });
+```
+
+The site passes its own `test` and `expect` because these files import
+Playwright for types only. In symlink mode they live outside the site, where a
+runtime import would load a second copy of `@playwright/test`, which
+Playwright refuses to run with.
+
 ## Updating
 
-Changes here require the consumer sites to rebuild. A future
-`repository_dispatch` webhook can trigger rebuilds in `jellyrock.app`, `docs`,
-and `api-docs` automatically; for now, push to `main` here, then re-run the
-consumer deploy workflows manually (or wait for their next push).
+Merging a change to the shipped files (`nav.ts`, `tokens.css`, `components/`,
+`testing/`) tags a release ([`release.yml`](.github/workflows/release.yml)):
+a patch, or a minor when a commit since the last tag is a `feat:`.
+
+- **jellyrock.app** gets the release automatically: its `shared-ui-bump`
+  workflow opens the bump PR and auto-merges it when its screenshots match the
+  ones this repo's [consumer preview](.github/workflows/consumer-preview.yml)
+  approved on the change's PR.
+- **docs** gets a Renovate PR. Patch bumps automerge on green CI; minor bumps
+  wait for review until docs has browser tests.

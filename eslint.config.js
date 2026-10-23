@@ -34,6 +34,15 @@ export default [
     },
   },
   {
+    // testing/ runs in Node (the static server, and the test code Playwright loads).
+    files: ['testing/**'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
     ignores: ['node_modules'],
   },
 ];
