@@ -52,7 +52,8 @@ first when shipping cross-repo changes.
 ## Local development
 
 ```bash
-nvm use                # Node 24 + its npm 11, from .nvmrc (lockfiles must be written with npm 11)
+nvm use                # Node from .nvmrc
+npm install -g "$(node -p 'require("./package.json").packageManager')"  # the npm CI and Renovate use
 npm ci
 npm run check          # tsc + eslint + prettier
 npm run fix            # eslint --fix + prettier --write
