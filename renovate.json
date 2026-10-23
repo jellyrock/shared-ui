@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>jellyrock/.github//renovate/default"]
+  "extends": ["github>jellyrock/.github//renovate/default"],
+  "packageRules": [
+    {
+      "description": "TypeScript 7 is held back (#24): typescript-eslint (8.72.0, the latest on 2026-10-23) accepts typescript >=4.8.4 <6.1.0, so npm can't install 7 beside it. Renovate offers 6.x instead. Remove this rule once it accepts 7 (check: npm view typescript-eslint peerDependencies).",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7.0.0"
+    }
+  ]
 }

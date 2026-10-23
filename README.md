@@ -52,6 +52,7 @@ first when shipping cross-repo changes.
 ## Local development
 
 ```bash
+nvm use                # Node 24 + its npm 11, from .nvmrc (lockfiles must be written with npm 11)
 npm ci
 npm run check          # tsc + eslint + prettier
 npm run fix            # eslint --fix + prettier --write
