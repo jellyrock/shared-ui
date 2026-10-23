@@ -27,13 +27,12 @@ function isCurrent(href: string): boolean {
     <a class="jr-site-logo" href={resolveHref(siteHome.href, currentOrigin)}>{siteHome.text}</a>
 
     <nav class="jr-site-nav" aria-label="Site navigation">
-      {
-        headerLinks.map((link) => (
-          <a href={resolveHref(link.href, currentOrigin)} aria-current={isCurrent(link.href) ? 'page' : undefined}>
-            {link.text}
-          </a>
-        ))
-      }
+      {headerLinks.map((link) => <a
+        href={resolveHref(link.href, currentOrigin)}
+        aria-current={isCurrent(link.href) ? 'page' : undefined}
+      >
+        {link.text}
+      </a>)}
     </nav>
 
     <div class="jr-site-header-extra">
@@ -49,13 +48,11 @@ function isCurrent(href: string): boolean {
       </svg>
     </a>
 
-    {
-      /*
+    {/*
       Small screens: the links above are hidden, so a menu button opens them in a popover.
       Native `popover` needs no JavaScript, so it works under the sites' strict
       `script-src 'self'` CSP; the browser closes it on Esc or a tap outside.
-    */
-    }
+    */}
     <button class="jr-site-menu-button" type="button" popovertarget="jr-site-menu" aria-label="Site menu">
       <svg
         width="22"
@@ -70,13 +67,12 @@ function isCurrent(href: string): boolean {
       </svg>
     </button>
     <nav id="jr-site-menu" class="jr-site-menu" popover aria-label="Site menu">
-      {
-        headerLinks.map((link) => (
-          <a href={resolveHref(link.href, currentOrigin)} aria-current={isCurrent(link.href) ? 'page' : undefined}>
-            {link.text}
-          </a>
-        ))
-      }
+      {headerLinks.map((link) => <a
+        href={resolveHref(link.href, currentOrigin)}
+        aria-current={isCurrent(link.href) ? 'page' : undefined}
+      >
+        {link.text}
+      </a>)}
       <a class="jr-site-menu-donate" href={resolveHref(donateLink.href, currentOrigin)}>{donateLink.text}</a>
     </nav>
   </div>
