@@ -14,7 +14,7 @@
     "url": "https://github.com/jellyrock/shared-ui/issues"
   },
   "type": "module",
-  "packageManager": "npm@11.21.1",
+  "packageManager": "npm@12.2.1",
   "scripts": {
     "check": "npm run check:tsc && npm run check:eslint && npm run check:prettier",
     "check:tsc": "tsc --noEmit",
