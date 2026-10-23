@@ -50,7 +50,6 @@ export const footerSections: FooterSection[] = [
     links: [
       { text: 'User Docs', href: 'https://docs.jellyrock.app' },
       { text: 'Dev Docs', href: 'https://dev.jellyrock.app' },
-      { text: 'API Reference', href: 'https://api.jellyrock.app' },
     ],
   },
   {
