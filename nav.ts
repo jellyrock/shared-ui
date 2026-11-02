@@ -43,6 +43,7 @@ export const footerSections: FooterSection[] = [
       { text: 'Install', href: 'https://jellyrock.app/install/' },
       { text: 'Features', href: 'https://jellyrock.app/features/' },
       { text: 'Screenshots', href: 'https://jellyrock.app/screenshots/' },
+      { text: 'Companion plugin', href: 'https://jellyrock.app/companion-plugin/' },
     ],
   },
   {
