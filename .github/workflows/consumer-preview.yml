@@ -66,6 +66,7 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm run build:visual
           git rev-parse HEAD > ../jellyrock.app-commit.txt
 
       # jellyrock.app's own wrapper runs Playwright in the image jellyrock.app pins, so the
@@ -78,7 +79,11 @@ jobs:
         id: visual
         working-directory: jellyrock.app
         continue-on-error: true
+        # jellyrock.app's screenshots compare its fixed-data build (dist-visual/, from its committed
+        # test catalog), so live feature content never shows up as a shared-ui change.
         run: scripts/playwright-docker.sh playwright test --grep @visual
+        env:
+          DIST_DIR: dist-visual
 
       # Keep the diff report from the comparison run; recording overwrites playwright-report/.
       - name: Record the screenshots this change produces
@@ -87,6 +92,8 @@ jobs:
         run: |
           mv playwright-report ../jellyrock.app-report
           scripts/playwright-docker.sh playwright test --grep @visual --update-snapshots
+        env:
+          DIST_DIR: dist-visual
 
       - name: Summary
         working-directory: jellyrock.app
